@@ -129,16 +129,17 @@ public class MoveTest : MonoBehaviour
         rb.velocity = new Vector3(moveDir.x * moveSpeed, rb.velocity.y, moveDir.z * moveSpeed);
 
         if (moveDir != Vector3.zero) {
-            anim.SetFloat(AnimatorState.Speed.ToString(), 0.8f);
+            //anim.SetFloat(AnimatorState.Speed.ToString(), 0.8f);
         } else {
             //Debug.Log(rb.velocity.magnitude);
             //anim.SetFloat("Speed", rb.velocity.magnitude);
-            anim.SetFloat(AnimatorState.Speed.ToString(), 0);
+            //anim.SetFloat(AnimatorState.Speed.ToString(), 0);
         }
 
         // 移動に合わせて向きを変える
         LookDirection(moveDir);
     }
+
 
     /// <summary>
 	/// 向きを変える
@@ -150,38 +151,20 @@ public class MoveTest : MonoBehaviour
             return;
         }
 
-        //Vector3 lastPos = transform.position;
-        //移動先といた場所を求める なぜ(0, 0, 0)にならないんですか。
-        //Vector3 diff = transform.position - lastPos;
-        ////前にいた場所  なぜ前の場所が代入されて、今の場所が代入されないんですか？
-        //lastPos = transform.position;
-        ////差を判定
-        //if (diff.magnitude > 0.01f) {
-        //	//差の方向を向く
-        //	transform.rotation = Quaternion.LookRotation(diff);
-        //}
+        Debug.Log(dir);
 
-
-        
-
-        // 補間関数Slerp（始まりの位置, 終わりの位置, 時間）　Leapでも動くが途中の挙動が変
-        //Vector3 forward = Vector3.Slerp(transform.forward, dir, rotateSpeed * Time.deltaTime);
-
-        Vector3 forward = Vector3.Slerp(transform.forward, dir, rotateSpeed * Time.deltaTime);
-
-        // 引数はVector3　オブジェクトの向きを変える
-        //transform.LookAt(transform.position + forward);
+        if (dir.x == 0) {
+            return;
+        }
 
         float pos = 0;
-        if (dir.x >= 0) {
+        if (dir.x > 0) {
             pos = 0;
         } else {
             pos = 180;
         }
 
         transform.rotation = Quaternion.Euler(new Vector3(0, pos, 0));
-
-        //transform.LookAt(transform.position + new Vector3(0, pos, 0));
 
         //isAttack = false;
     }
