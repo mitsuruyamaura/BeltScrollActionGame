@@ -45,6 +45,8 @@ public class MoveTest : MonoBehaviour
 
     }
 
+    public GameManager gameManager;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -76,6 +78,15 @@ public class MoveTest : MonoBehaviour
     }
 
     void FixedUpdate() {
+        if(transform.position.x < gameManager.leftLimitPos) {
+            transform.position = new Vector3(gameManager.leftLimitPos, transform.position.y, transform.position.z);
+        }
+
+        if (transform.position.x > gameManager.rightLimitPos) {
+            transform.position = new Vector3(gameManager.rightLimitPos, transform.position.y, transform.position.z);
+        }
+
+
         //if (anim.GetCurrentAnimatorStateInfo(0).IsName(AnimatorState.Attack.ToString())) {
         //	return;
         //}
@@ -151,7 +162,7 @@ public class MoveTest : MonoBehaviour
             return;
         }
 
-        Debug.Log(dir);
+        //Debug.Log(dir);
 
         if (dir.x == 0) {
             return;
