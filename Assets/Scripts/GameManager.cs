@@ -114,17 +114,24 @@ public class GameManager : MonoBehaviour
         if (generateTimer >= appearTime) {
             generateTimer = 0;
 
-            float posX = chara.transform.position.x;
-            float posZ = chara.transform.position.z;
-            Vector3 generatePos = new Vector3(posX + Random.Range(-0.1f, 0.1f), 0.0f, posZ + Random.Range(-0.1f, 0.1f));
-
             // 敵生成
-            GenerateEnemy(generatePos, generateCount);
-            
+            GenerateEnemy(chara.transform.position, generateCount);         
         }
     }
 
-    private void GenerateEnemy(Vector3 generatePos, int enemyIndex) {
+    private void GenerateEnemy(Vector3 charaPos, int enemyIndex) {
+        // 左右のどちらに生成するかランダムで決める
+
+        int direction = Random.Range(0, 2);
+        charaPos.x = direction == 0 ? charaPos.x += 2.5f : charaPos.x -= 2.5f;
+
+        // ランダムな位置を設定
+
+        float posX = charaPos.x;
+        float posZ = charaPos.z;
+
+        Vector3 generatePos = new Vector3(posX + Random.Range(-0.5f, 0.5f), charaPos.y, posZ + Random.Range(-0.5f, 0.5f));
+
         GameObject enemy = Instantiate(enemyPrefabs[stageList.stageDatas[currentStageNo].areaDatas[areaIndex].appearNum[enemyIndex]], generatePos, Quaternion.identity);
         enemy.GetComponent<Enemy>().SetUpEnemy(this);        
         enemyList.Add(enemy);
