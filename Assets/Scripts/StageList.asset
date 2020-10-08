@@ -16,8 +16,8 @@ MonoBehaviour:
   - stageNo: 0
     areaDatas:
     - areaNo: 0
-      startPos: -2
-      endPos: 2
+      startPos: 25
+      endPos: 40
       appearNum: 000000000100000000000000
     - areaNo: 1
       startPos: 2

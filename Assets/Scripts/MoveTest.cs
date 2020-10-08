@@ -74,7 +74,7 @@ public class MoveTest : MonoBehaviour
         JudgeJump();
 
         // TODO 攻撃
-        
+
     }
 
     void FixedUpdate() {
@@ -140,11 +140,11 @@ public class MoveTest : MonoBehaviour
         rb.velocity = new Vector3(moveDir.x * moveSpeed, rb.velocity.y, moveDir.z * moveSpeed);
 
         if (moveDir != Vector3.zero) {
-            //anim.SetFloat(AnimatorState.Speed.ToString(), 0.8f);
+            anim.SetFloat(AnimatorState.Speed.ToString(), 0.8f);
         } else {
             //Debug.Log(rb.velocity.magnitude);
             //anim.SetFloat("Speed", rb.velocity.magnitude);
-            //anim.SetFloat(AnimatorState.Speed.ToString(), 0);
+            anim.SetFloat(AnimatorState.Speed.ToString(), 0);
         }
 
         // 移動に合わせて向きを変える
@@ -170,9 +170,9 @@ public class MoveTest : MonoBehaviour
 
         float pos = 0;
         if (dir.x > 0) {
-            pos = 0;
+            pos = 90;    // 右
         } else {
-            pos = 180;
+            pos = -90;   // 左
         }
 
         transform.rotation = Quaternion.Euler(new Vector3(0, pos, 0));
