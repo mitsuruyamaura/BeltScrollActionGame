@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MoveTest : MonoBehaviour
+public class PlayerController : MonoBehaviour
 {
     [Header("移動速度")]
     public float moveSpeed;
@@ -16,6 +16,8 @@ public class MoveTest : MonoBehaviour
 
     public int attackPower;
     public float bulletSpeed;
+
+    //public MoveLimit moveLimit;
 
     //public Joystick joystick;
     float x;
@@ -78,13 +80,25 @@ public class MoveTest : MonoBehaviour
     }
 
     void FixedUpdate() {
-        if(transform.position.x < gameManager.leftLimitPos) {
-            transform.position = new Vector3(gameManager.leftLimitPos, transform.position.y, transform.position.z);
-        }
+        //float posX = Mathf.Clamp(transform.position.x, moveLimit.horizontalLimit.left, moveLimit.horizontalLimit.right);
+        //float posZ = Mathf.Clamp(transform.position.z, moveLimit.depthLimit.back, moveLimit.depthLimit.forword);
 
-        if (transform.position.x > gameManager.rightLimitPos) {
-            transform.position = new Vector3(gameManager.rightLimitPos, transform.position.y, transform.position.z);
-        }
+
+        float posX = Mathf.Clamp(transform.position.x, gameManager.leftLimitPos, gameManager.rightLimitPos);
+        float posZ = Mathf.Clamp(transform.position.z, gameManager.backLimitPos, gameManager.forwordLimitPos);
+
+
+
+
+        transform.position = new Vector3(posX, transform.position.y,posZ);
+
+        //if(transform.position.x < gameManager.leftLimitPos) {
+        //    transform.position = new Vector3(gameManager.leftLimitPos, transform.position.y, transform.position.z);
+        //}
+
+        //if (transform.position.x > gameManager.rightLimitPos) {
+        //    transform.position = new Vector3(gameManager.rightLimitPos, transform.position.y, transform.position.z);
+        //}
 
 
         //if (anim.GetCurrentAnimatorStateInfo(0).IsName(AnimatorState.Attack.ToString())) {
@@ -139,13 +153,16 @@ public class MoveTest : MonoBehaviour
 
         rb.velocity = new Vector3(moveDir.x * moveSpeed, rb.velocity.y, moveDir.z * moveSpeed);
 
-        if (moveDir != Vector3.zero) {
-            anim.SetFloat(AnimatorState.Speed.ToString(), 0.8f);
-        } else {
-            //Debug.Log(rb.velocity.magnitude);
-            //anim.SetFloat("Speed", rb.velocity.magnitude);
-            anim.SetFloat(AnimatorState.Speed.ToString(), 0);
-        }
+        anim.SetFloat(AnimatorState.Speed.ToString(), rb.velocity.magnitude);
+
+
+        //if (moveDir != Vector3.zero) {
+        //    anim.SetFloat(AnimatorState.Speed.ToString(), 0.8f);
+        //} else {
+        //    //Debug.Log(rb.velocity.magnitude);
+        //    //anim.SetFloat("Speed", rb.velocity.magnitude);
+        //    anim.SetFloat(AnimatorState.Speed.ToString(), 0);
+        //}
 
         // 移動に合わせて向きを変える
         LookDirection(moveDir);
