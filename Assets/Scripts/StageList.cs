@@ -17,9 +17,8 @@ public class StageList : ScriptableObject {
     [Serializable]
     public class AreaData {
         public int areaNo;
-        public float startPos;
-        public float endPos;
-        public int[] appearNum;     // 敵の番号を入れておく
+        public MoveLimit areaMoveLimit;
+        public int[] appearNum;           // 敵の番号を入れておく
         
     }
 }

@@ -4,27 +4,40 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    public StageList stageList;
+    public StageList stageList;    // スクリプタブル・オブジェクトを登録
 
     public int areaIndex;          // 現在のエリア数。敵をすべて倒すとカウントアップ
     public int currentStageNo;     // 現在のステージ数。ボスを倒してクリアすると増える。GameDataに管理させる
 
-    public MoveTest chara;
+    public PlayerController playerController;
 
     public float leftLimitPos;
     public float rightLimitPos;
+    public float forwordLimitPos;
+    public float backLimitPos;
 
     public StageList.StageData currentStageData;
 
     public int generateCount;
-    public int destroyCount;
-    public bool isCompleteGenerate;
+
+    public float generateTimer;
+
+    public int appearTime;
 
     // 生成した敵を入れるリスト
-    public List<GameObject> enemyList = new List<GameObject>();
+    public List<Enemy> enemyList = new List<Enemy>();
+
+
+    public int destroyCount;
+
+    public bool isCompleteGenerate;
 
     // 敵のプレファブ
-    public List<GameObject> enemyPrefabs = new List<GameObject>();
+    public List<Enemy> enemyPrefabs = new List<Enemy>();
+
+
+    // 未
+
 
     public enum GameState {
         Play,
@@ -34,9 +47,7 @@ public class GameManager : MonoBehaviour
 
     public GameState gameState = GameState.Wait;
 
-    public float generateTimer;
-
-    public int appearTime;
+    public AreaCameraManager areaCameraManager;
 
 
     void Start()
@@ -46,6 +57,9 @@ public class GameManager : MonoBehaviour
         SetUpNextArea();
     }
 
+    /// <summary>
+    /// ステージの番号を取得してステージの準備を行う
+    /// </summary>
     private void InitStage() {
         // TODO GameDataからステージ番号をセット
         currentStageNo = 0;
@@ -66,17 +80,25 @@ public class GameManager : MonoBehaviour
 
     }
 
-
+    /// <summary>
+    /// エリア番号からエリアの情報を取得
+    /// </summary>
     private void SetUpNextArea() {
-        // エリア番号からエリアの情報を取得
+        // カメラの優先順位　切り替え
+        areaCameraManager.ChengeVirtualCamera(areaIndex);
 
         // 移動範囲制限
-        leftLimitPos = stageList.stageDatas[currentStageNo].areaDatas[areaIndex].startPos;
-        rightLimitPos = stageList.stageDatas[currentStageNo].areaDatas[areaIndex].endPos;
+        leftLimitPos = currentStageData.areaDatas[areaIndex].areaMoveLimit.horizontalLimit.left;
+        rightLimitPos = currentStageData.areaDatas[areaIndex].areaMoveLimit.horizontalLimit.right;
+        forwordLimitPos = currentStageData.areaDatas[areaIndex].areaMoveLimit.depthLimit.forword;
+        backLimitPos = currentStageData.areaDatas[areaIndex].areaMoveLimit.depthLimit.back;
 
         // 敵の生成数と討伐数を初期化
         generateCount = 0;
         destroyCount = 0;
+
+        // エリアの敵をすべて生成しているか確認用の変数を初期化
+        isCompleteGenerate = false;
 
         // 敵のリストクリア 
         enemyList.Clear();
@@ -88,7 +110,6 @@ public class GameManager : MonoBehaviour
         gameState = GameState.Play;
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (gameState == GameState.Wait) {
@@ -96,7 +117,7 @@ public class GameManager : MonoBehaviour
         }
 
         if (gameState == GameState.Move) {
-            if (chara.transform.position.x >= rightLimitPos) {
+            if (playerController.transform.position.x >= rightLimitPos) {
 
                 gameState = GameState.Wait;
                 areaIndex++;
@@ -105,7 +126,7 @@ public class GameManager : MonoBehaviour
         }
 
         // エリアごとの敵の生成数と現在の生成数を比べて、すべて生成済の場合には処理をしない
-        if (generateCount >= stageList.stageDatas[currentStageNo].areaDatas[areaIndex].appearNum.Length) {
+        if (generateCount >= currentStageData.areaDatas[areaIndex].appearNum.Length) {
             return;
         }
 
@@ -115,10 +136,15 @@ public class GameManager : MonoBehaviour
             generateTimer = 0;
 
             // 敵生成
-            GenerateEnemy(chara.transform.position, generateCount);         
+            GenerateEnemy(playerController.transform.position, generateCount);         
         }
     }
 
+    /// <summary>
+    /// 敵の生成
+    /// </summary>
+    /// <param name="charaPos"></param>
+    /// <param name="enemyIndex"></param>
     private void GenerateEnemy(Vector3 charaPos, int enemyIndex) {
         // 左右のどちらに生成するかランダムで決める
 
@@ -132,14 +158,17 @@ public class GameManager : MonoBehaviour
 
         Vector3 generatePos = new Vector3(posX + Random.Range(-0.5f, 0.5f), charaPos.y, posZ + Random.Range(-0.5f, 0.5f));
 
-        GameObject enemy = Instantiate(enemyPrefabs[stageList.stageDatas[currentStageNo].areaDatas[areaIndex].appearNum[enemyIndex]], generatePos, Quaternion.identity);
-        enemy.GetComponent<Enemy>().SetUpEnemy(this);        
+        Enemy enemy = Instantiate(enemyPrefabs[currentStageData.areaDatas[areaIndex].appearNum[enemyIndex]], generatePos, Quaternion.identity);
+        
+        enemy.SetUpEnemy(this);
+
+        // 生成された敵の情報を Enemy クラス単位でListに追加する
         enemyList.Add(enemy);
 
         generateCount++;
 
         // エリア内の敵をすべて生成したか確認
-        if (generateCount >= stageList.stageDatas[currentStageNo].areaDatas[areaIndex].appearNum.Length) {
+        if (generateCount >= currentStageData.areaDatas[areaIndex].appearNum.Length) {
             isCompleteGenerate = true;
         } else {
             // 敵が出現するまでの時間を設定
@@ -147,16 +176,22 @@ public class GameManager : MonoBehaviour
         }
     }
 
-
-    public void RemoveEmenyList(GameObject enemy) {
+    /// <summary>
+    /// 討伐数を加算してenemyListから倒した敵を削除
+    /// </summary>
+    /// <param name="enemy"></param>
+    public void RemoveEmenyList(Enemy enemy) {
         destroyCount++;
 
         enemyList.Remove(enemy);
 
+        // エリア内の敵の生成状況を確認
         CheckAreaClear();
     }
 
-
+    /// <summary>
+    /// エリア内の敵の生成状況を確認
+    /// </summary>
     private void CheckAreaClear() {
         // 敵の生成がすべて終了していない場合にはクリアにしない
         if (!isCompleteGenerate) {
@@ -164,6 +199,7 @@ public class GameManager : MonoBehaviour
         }
 
         if (destroyCount >= generateCount) {
+            Debug.Log("エリア　クリア");
             gameState = GameState.Move;
         }
     }
