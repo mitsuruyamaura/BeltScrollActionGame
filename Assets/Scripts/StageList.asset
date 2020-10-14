@@ -16,18 +16,29 @@ MonoBehaviour:
   - stageNo: 0
     areaDatas:
     - areaNo: 0
-      startPos: 25
-      endPos: 40
-      appearNum: 000000000100000000000000
+      areaMoveLimit:
+        horizontalLimit:
+          left: 20
+          right: 35
+        depthLimit:
+          forword: 30
+          back: 20
+      appearNum: 000000000000000000000000
     - areaNo: 1
-      startPos: 2
-      endPos: 4
+      areaMoveLimit:
+        horizontalLimit:
+          left: 0
+          right: 0
+        depthLimit:
+          forword: 0
+          back: 0
       appearNum: 010000000000000001000000
     - areaNo: 2
-      startPos: 4
-      endPos: 6
+      areaMoveLimit:
+        horizontalLimit:
+          left: 0
+          right: 0
+        depthLimit:
+          forword: 0
+          back: 0
       appearNum: 000000000000000001000000
-  - stageNo: 1
-    areaDatas: []
-  - stageNo: 2
-    areaDatas: []
