@@ -4,15 +4,17 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    private GameManager gameManager;
-
     public bool isDebug;
 
+    private GameManager gameManager;
+
+    /// <summary>
+    /// Enemyクラスの初期設定
+    /// </summary>
+    /// <param name="gameManager"></param>
     public void SetUpEnemy(GameManager gameManager) {
         this.gameManager = gameManager;
     }
-
-
 
     void Start()
     {
@@ -21,9 +23,16 @@ public class Enemy : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 敵を破壊
+    /// </summary>
+    /// <param name="waitTime"></param>
+    /// <returns></returns>
     private IEnumerator DestroyEnemy(float waitTime = 0.0f) {
         yield return new WaitForSeconds(waitTime);
-        gameManager.RemoveEmenyList(gameObject);
+
+        // 討伐数を加算し、敵管理用のリストから倒した敵を削除するメソッドの呼び出し
+        gameManager.RemoveEmenyList(this);
         Destroy(gameObject);
     }
 
