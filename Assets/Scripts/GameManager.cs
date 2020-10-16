@@ -36,6 +36,8 @@ public class GameManager : MonoBehaviour
     public List<Enemy> enemyPrefabs = new List<Enemy>();
 
 
+    public bool isDebugAreaMoving;
+
     // 未
 
 
@@ -54,6 +56,18 @@ public class GameManager : MonoBehaviour
     {
         InitStage();
 
+        SetUpNextArea();
+    }
+
+    /// <summary>
+    /// エリアの番号を切り替える
+    /// </summary>
+    /// <param name="amountNo"></param>
+    public void OnClickChangeAreaNo(int amountNo) {
+        // エリアの番号をセット
+        areaIndex += amountNo;
+
+        // エリア番号からエリアの情報を取得
         SetUpNextArea();
     }
 
@@ -93,12 +107,20 @@ public class GameManager : MonoBehaviour
         forwordLimitPos = currentStageData.areaDatas[areaIndex].areaMoveLimit.depthLimit.forword;
         backLimitPos = currentStageData.areaDatas[areaIndex].areaMoveLimit.depthLimit.back;
 
-        // 敵の生成数と討伐数を初期化
-        generateCount = 0;
-        destroyCount = 0;
+        if (isDebugAreaMoving) {
+            generateCount = currentStageData.areaDatas[areaIndex].appearNum.Length;
 
-        // エリアの敵をすべて生成しているか確認用の変数を初期化
-        isCompleteGenerate = false;
+            isCompleteGenerate = true;
+        } else {
+            // 敵の生成数と討伐数を初期化
+            generateCount = 0;
+            destroyCount = 0;
+
+            // エリアの敵をすべて生成しているか確認用の変数を初期化
+            isCompleteGenerate = false;
+        }
+
+        
 
         // 敵のリストクリア 
         enemyList.Clear();
@@ -112,6 +134,16 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
+        if (isDebugAreaMoving) {
+            if (Input.GetKeyDown(KeyCode.O)) {
+                OnClickChangeAreaNo(-1);
+            }
+
+            if (Input.GetKeyDown(KeyCode.P)) {
+                OnClickChangeAreaNo(1);
+            }
+        }
+
         if (gameState == GameState.Wait) {
             return;
         }
