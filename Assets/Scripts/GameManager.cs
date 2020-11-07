@@ -27,19 +27,12 @@ public class GameManager : MonoBehaviour
     // 生成した敵を入れるリスト
     public List<Enemy> enemyList = new List<Enemy>();
 
-
     public int destroyCount;
 
     public bool isCompleteGenerate;
 
     // 敵のプレファブ
     public List<Enemy> enemyPrefabs = new List<Enemy>();
-
-
-    public bool isDebugAreaMoving;
-
-    // 未
-
 
     public enum GameState {
         Play,
@@ -49,11 +42,22 @@ public class GameManager : MonoBehaviour
 
     public GameState gameState = GameState.Wait;
 
+
+    // 未
+    public bool isDebugAreaMoving;
+
     public AreaCameraManager areaCameraManager;
 
 
     void Start()
     {
+        // 現在のステージ番号を取得
+        if (GameData.instance != null) {
+            currentStageNo = GameData.instance.currentStageNo;
+        } else {
+            currentStageNo = 0;  // 初期化
+        }
+
         InitStage();
 
         SetUpNextArea();
@@ -75,8 +79,12 @@ public class GameManager : MonoBehaviour
     /// ステージの番号を取得してステージの準備を行う
     /// </summary>
     private void InitStage() {
+        // 初期値
+        gameState = GameState.Wait;
+        Debug.Log(gameState);
+
         // TODO GameDataからステージ番号をセット
-        currentStageNo = 0;
+        //currentStageNo = 0;
         
 
         // ステージ番号から、どのステージかを検索してStageDataを取得
@@ -118,9 +126,7 @@ public class GameManager : MonoBehaviour
 
             // エリアの敵をすべて生成しているか確認用の変数を初期化
             isCompleteGenerate = false;
-        }
-
-        
+        }     
 
         // 敵のリストクリア 
         enemyList.Clear();
@@ -130,6 +136,7 @@ public class GameManager : MonoBehaviour
 
         // ゲームスタート
         gameState = GameState.Play;
+        Debug.Log(gameState);
     }
 
     void Update()
@@ -152,8 +159,18 @@ public class GameManager : MonoBehaviour
             if (playerController.transform.position.x >= rightLimitPos) {
 
                 gameState = GameState.Wait;
+                Debug.Log(gameState);
+
                 areaIndex++;
-                SetUpNextArea();
+
+                // ステージをクリアしたか確認
+                if (CheckStageClear() == true) {  // true かどうか判定
+                    // クリアしていれば、次のステージをスタート
+                    NextStage();
+                } else {
+                    // クリアしていなければ、次のエリアをスタート                 
+                    SetUpNextArea();
+                }
             }
         }
 
@@ -233,6 +250,51 @@ public class GameManager : MonoBehaviour
         if (destroyCount >= generateCount) {
             Debug.Log("エリア　クリア");
             gameState = GameState.Move;
+            Debug.Log(gameState);
         }
+    }
+
+    /// <summary>
+    /// ステージのクリア判定
+    /// </summary>
+    private bool CheckStageClear() {
+
+        // エリアの番号がステージの最後のエリアの番号かどうか確認する
+        if (areaIndex >= currentStageData.areaDatas.Count) {
+            return true;
+        }
+        return false;
+    }
+
+    /// <summary>
+    /// 次のステージへ移行
+    /// </summary>
+    private IEnumerator NextStage() {
+        // ステージ番号を次に送る
+        currentStageNo++;
+
+        // すべてのステージをクリアしたか確認する
+        if (currentStageNo >= stageList.stageDatas.Count) {
+            // ゲームクリア
+            Debug.Log("ゲームクリア");
+        } else {
+            // すべてのステージをクリアしていなければ
+            Debug.Log("次のステージへ");
+
+            // TODO ステージクリアの演出
+            yield return StartCoroutine(SceneStory());
+
+            // 次のステージのデータを取得
+            InitStage();
+
+            // 次のステージの最初のエリアを用意
+            SetUpNextArea();
+        }
+    }
+
+    private IEnumerator SceneStory() {
+        // TODO ストーリー展開
+
+        yield return null;
     }
 }
