@@ -153,6 +153,73 @@ Transform:
   m_Father: {fileID: 2033448737}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &227307921
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 227307923}
+  - component: {fileID: 227307922}
+  m_Layer: 0
+  m_Name: GameData
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &227307922
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 227307921}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5649fcbec24f44b4d8588430132b311e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  charaDataList:
+  - no: 0
+    hp: 0
+    moveSpeed: 0
+    jumpPower: 0
+    attackPower: 0
+  - no: 0
+    hp: 0
+    moveSpeed: 0
+    jumpPower: 0
+    attackPower: 0
+  - no: 0
+    hp: 0
+    moveSpeed: 0
+    jumpPower: 0
+    attackPower: 0
+  currentPlayerData:
+    no: 0
+    hp: 0
+    moveSpeed: 0
+    jumpPower: 0
+    attackPower: 0
+  currentStageNo: 0
+  battleTime: 0
+--- !u!4 &227307923
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 227307921}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 17
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &319435657
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -856,7 +923,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 785870451}
-  m_LocalRotation: {x: 0.10001655, y: -0.00000059402095, z: 0.00000005971133, w: 0.99498576}
+  m_LocalRotation: {x: 0.10003085, y: -0.00000075883725, z: 0.00000007628977, w: 0.9949843}
   m_LocalPosition: {x: 0, y: 0.649, z: -4.57}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -910,7 +977,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8520f7d2b74610541bca934fd9ebca40, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  virtualCameras:
+  areaCameras:
   - {fileID: 1470592788}
   - {fileID: 1318825262}
 --- !u!4 &820466776
@@ -921,7 +988,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 820466774}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 31.536055, y: 3.2502544, z: 26.659664}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -1665,14 +1732,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1318825261}
-  m_LocalRotation: {x: 0.12940949, y: -0.12940958, z: 0.017037088, w: 0.98296297}
-  m_LocalPosition: {x: 31.8, y: 7.5881896, z: 17.919874}
+  m_LocalRotation: {x: 0.10355337, y: -0.60355335, z: 0.07945928, w: 0.78656614}
+  m_LocalPosition: {x: 38.63013, y: 7.58819, z: 24.75}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 354097135}
   m_Father: {fileID: 0}
   m_RootOrder: 16
-  m_LocalEulerAnglesHint: {x: 15, y: -15, z: 0}
+  m_LocalEulerAnglesHint: {x: 15, y: -75, z: 0}
 --- !u!1 &1470592787
 GameObject:
   m_ObjectHideFlags: 0
@@ -1706,7 +1773,7 @@ MonoBehaviour:
   - m_Script
   m_LockStageInInspector: 
   m_StreamingVersion: 20170927
-  m_Priority: 11
+  m_Priority: 10
   m_StandbyUpdate: 2
   m_LookAt: {fileID: 0}
   m_Follow: {fileID: 35366216}
@@ -1832,7 +1899,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   stageList: {fileID: 11400000, guid: a46e31692ef9fe94abc8842b06030441, type: 2}
   areaIndex: 0
-  currentStageNo: 0
+  currentStageNo: 1
   playerController: {fileID: 2033448735}
   leftLimitPos: 0
   rightLimitPos: 0
@@ -1849,8 +1916,8 @@ MonoBehaviour:
   isCompleteGenerate: 0
   enemyPrefabs:
   - {fileID: 4874283829778288788, guid: 61debf180f2df274791fe0c9c775039d, type: 3}
-  isDebugAreaMoving: 1
-  gameState: 1
+  gameState: 0
+  isDebugAreaMoving: 0
   areaCameraManager: {fileID: 820466775}
 --- !u!4 &1621943919
 Transform:

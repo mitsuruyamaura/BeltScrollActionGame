@@ -18,7 +18,6 @@ public class StageList : ScriptableObject {
     public class AreaData {
         public int areaNo;
         public MoveLimit areaMoveLimit;
-        public int[] appearNum;           // 敵の番号を入れておく
-        
+        public int[] appearNum;           // 敵の番号を入れておく        
     }
 }

@@ -28,17 +28,28 @@ MonoBehaviour:
       areaMoveLimit:
         horizontalLimit:
           left: 35
-          right: 55
+          right: 50
         depthLimit:
           forword: 30
           back: 20
       appearNum: 000000000000000000000000
-    - areaNo: 2
+  - stageNo: 1
+    areaDatas:
+    - areaNo: 0
       areaMoveLimit:
         horizontalLimit:
-          left: 55
-          right: 70
+          left: 200
+          right: -200
         depthLimit:
-          forword: 30
-          back: 20
+          forword: 200
+          back: -200
+      appearNum: 000000000000000000000000
+    - areaNo: 1
+      areaMoveLimit:
+        horizontalLimit:
+          left: 200
+          right: -200
+        depthLimit:
+          forword: 200
+          back: -200
       appearNum: 000000000000000000000000

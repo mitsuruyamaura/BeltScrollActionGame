@@ -5,18 +5,18 @@ using Cinemachine;
 
 public class AreaCameraManager : MonoBehaviour
 {
-    public CinemachineVirtualCamera[] virtualCameras;
+    public CinemachineVirtualCamera[] areaCameras;
     
     /// <summary>
     /// VirtualCameraの優先順位を切り替える
     /// </summary>
     /// <param name="cameraNo"></param>
     public void ChengeVirtualCamera(int cameraNo) {
-        for (int i = 0; i < virtualCameras.Length; i++) {
+        for (int i = 0; i < areaCameras.Length; i++) {
             if (cameraNo == i) {
-                virtualCameras[i].Priority = 11;
+                areaCameras[i].Priority = 11;
             } else {
-                virtualCameras[i].Priority = 10;
+                areaCameras[i].Priority = 10;
             }
         }
     }
