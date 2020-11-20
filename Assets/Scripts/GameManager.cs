@@ -49,6 +49,20 @@ public class GameManager : MonoBehaviour
     public AreaCameraManager areaCameraManager;
 
 
+    // Rayによる移動制限判定用
+
+    public GameObject limiterObjPrefab;    // 移動制限用オブジェクト
+
+    public GameObject rayObj;              // Rayを発射するオブジェクト
+
+    bool isHit;                            // Rayの判定結果
+
+    // BoxcastでRayを飛ばす
+    RaycastHit hit;                        // BoxCastの戻り値代入用
+
+    List<GameObject> limitObjList = new List<GameObject>();
+
+
     void Start()
     {
         // 現在のステージ番号を取得
@@ -103,6 +117,80 @@ public class GameManager : MonoBehaviour
     }
 
     /// <summary>
+    /// GizmosでRayの結果を表示するコールバック。この中でGizmosの処理を記述しないとエラーになる
+    /// </summary>
+    private void OnDrawGizmos() {
+        // 判定に使うサイズ
+        float scale = limiterObjPrefab.transform.localScale.x * 0.5f;
+
+        if (!isHit) {
+            Gizmos.DrawRay(rayObj.transform.position, -transform.up * 100);
+        } else {
+            Gizmos.DrawRay(rayObj.transform.position, -transform.up * hit.distance);
+            Gizmos.DrawWireCube(rayObj.transform.position - transform.up * hit.distance, Vector3.one * scale * 2);
+        }
+    }
+
+    /// <summary>
+    /// 移動制限範囲用のオブジェクトの生成
+    /// </summary>
+    private void CreateLimitObjs() {
+
+        // TODO BoxCastの判定に使うコライダーのサイズ(別の部分に移動して1回だけ処理したい)
+        float scale = limiterObjPrefab.transform.localScale.x * 0.5f;
+
+        // 生成個数の指定
+        int range = (int)(forwordLimitPos - backLimitPos) / 2;
+        Debug.Log(range);
+
+        // 画面左側に、移動できる範囲を制限するオブジェクトを生成
+        for (int i = 0; i < range; i++) {
+            // 左側
+
+            // Rayの発射位置を設定
+            rayObj.transform.position = new Vector3(leftLimitPos, rayObj.transform.position.y, backLimitPos + i * 2.5f);
+
+            // Rayを発射。Rayの接触したコライダーを持つゲームオブジェクトのレイヤーを判定(第2引数には半径を指定)
+            isHit = Physics.BoxCast(rayObj.transform.position, Vector3.one * scale, -transform.up, out hit);
+
+            Debug.Log(isHit);
+            Debug.Log(hit.collider.gameObject.layer);
+
+            // ObstacleLayerではなかったら
+            if (hit.collider.gameObject.layer != LayerMask.NameToLayer("Obstacle")) {
+                // 移動制限用のオブジェクトを生成してリストへ追加
+                limitObjList.Add(Instantiate(limiterObjPrefab, new Vector3(leftLimitPos, 5.0f, backLimitPos + i * 2.5f), limiterObjPrefab.transform.rotation));
+            }
+
+            // 右側
+            // Rayの発射位置を設定
+            rayObj.transform.position = new Vector3(rightLimitPos, rayObj.transform.position.y, backLimitPos + i * 2.5f);
+
+            // Rayを発射。Rayの接触したコライダーを持つゲームオブジェクトのレイヤーを判定(第2引数には半径を指定)
+            isHit = Physics.BoxCast(rayObj.transform.position, Vector3.one * scale, -transform.up, out hit);
+
+            Debug.Log(isHit);
+            Debug.Log(hit.collider.gameObject.layer);
+
+            // ObstacleLayerではなかったら
+            if (hit.collider.gameObject.layer != LayerMask.NameToLayer("Obstacle")) {
+                // 移動制限用のオブジェクトを生成してリストへ追加
+                limitObjList.Add(Instantiate(limiterObjPrefab, new Vector3(rightLimitPos, 5.0f, backLimitPos + i * 2.5f), limiterObjPrefab.transform.rotation));
+            }
+        }
+    }
+
+    /// <summary>
+    /// 移動制限範囲用のオブジェクトの削除
+    /// </summary>
+    private void DeleteLimitObjs() {
+        for (int i = 0; i < limitObjList.Count; i++) {
+            Destroy(limitObjList[i]);
+        }
+        limitObjList.Clear();
+    }
+
+    /// <summary>
     /// エリア番号からエリアの情報を取得
     /// </summary>
     private void SetUpNextArea() {
@@ -114,6 +202,11 @@ public class GameManager : MonoBehaviour
         rightLimitPos = currentStageData.areaDatas[areaIndex].areaMoveLimit.horizontalLimit.right;
         forwordLimitPos = currentStageData.areaDatas[areaIndex].areaMoveLimit.depthLimit.forword;
         backLimitPos = currentStageData.areaDatas[areaIndex].areaMoveLimit.depthLimit.back;
+
+
+        // 移動範囲制限用のオブジェクトを画面の左右に設置
+        CreateLimitObjs();
+
 
         if (isDebugAreaMoving) {
             generateCount = currentStageData.areaDatas[areaIndex].appearNum.Length;
@@ -251,6 +344,9 @@ public class GameManager : MonoBehaviour
             Debug.Log("エリア　クリア");
             gameState = GameState.Move;
             Debug.Log(gameState);
+
+            // 移動範囲制限用のオブジェクトを削除
+            DeleteLimitObjs();
         }
     }
 
