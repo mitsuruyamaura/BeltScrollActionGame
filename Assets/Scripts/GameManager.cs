@@ -159,7 +159,7 @@ public class GameManager : MonoBehaviour
             // ObstacleLayerではなかったら
             if (hit.collider.gameObject.layer != LayerMask.NameToLayer("Obstacle")) {
                 // 移動制限用のオブジェクトを生成してリストへ追加
-                limitObjList.Add(Instantiate(limiterObjPrefab, new Vector3(leftLimitPos, 5.0f, backLimitPos + i * 2.5f), limiterObjPrefab.transform.rotation));
+                limitObjList.Add(Instantiate(limiterObjPrefab, new Vector3(leftLimitPos, 8.0f, backLimitPos + i * 2.5f), limiterObjPrefab.transform.rotation));
             }
 
             // 右側
@@ -175,7 +175,7 @@ public class GameManager : MonoBehaviour
             // ObstacleLayerではなかったら
             if (hit.collider.gameObject.layer != LayerMask.NameToLayer("Obstacle")) {
                 // 移動制限用のオブジェクトを生成してリストへ追加
-                limitObjList.Add(Instantiate(limiterObjPrefab, new Vector3(rightLimitPos, 5.0f, backLimitPos + i * 2.5f), limiterObjPrefab.transform.rotation));
+                limitObjList.Add(Instantiate(limiterObjPrefab, new Vector3(rightLimitPos, 8.0f, backLimitPos + i * 2.5f), limiterObjPrefab.transform.rotation));
             }
         }
     }

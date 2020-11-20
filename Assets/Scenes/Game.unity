@@ -2398,7 +2398,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5286901207067844414, guid: 11f46b14b694c78488e0434adb5e3062, type: 3}
       propertyPath: m_Name
-      value: Cylinder
+      value: Obstacle
       objectReference: {fileID: 0}
     - target: {fileID: 5286901207067844414, guid: 11f46b14b694c78488e0434adb5e3062, type: 3}
       propertyPath: m_Layer
