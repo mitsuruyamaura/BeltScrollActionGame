@@ -6,6 +6,11 @@ public class GameData : MonoBehaviour
 {
     public static GameData instance;
 
+    public int currentStageNo;
+
+    public int battleTime;
+
+
     [System.Serializable]
     public class CharaData {
         public int no;
@@ -19,11 +24,6 @@ public class GameData : MonoBehaviour
     public List<CharaData> charaDataList = new List<CharaData>();
 
     public CharaData currentPlayerData;
-
-    public int currentStageNo;
-
-    public int battleTime;
-
 
 
     void Awake() {
