@@ -49,7 +49,16 @@ public class PlayerController : MonoBehaviour
 
     public GameManager gameManager;
 
-    // Start is called before the first frame update
+    public int comboCount;
+    public int comboLimit;
+
+    private float comboLimitTimer;
+    private bool isComboChain;
+
+    [SerializeField]
+    private UIManager uiManager;
+
+
     void Start()
     {
         InitPlayer();
@@ -77,6 +86,14 @@ public class PlayerController : MonoBehaviour
 
         // TODO 攻撃
 
+
+        // コンボの時間判定
+        UpdateComboLimitTime();
+
+        // デバッグ用
+        if (Input.GetKeyDown(KeyCode.Z)) {
+            Combo();
+        }
     }
 
     void FixedUpdate() {
@@ -229,5 +246,50 @@ public class PlayerController : MonoBehaviour
 
         //  AddForceにて上方向へ力を加える
         rb.AddForce(Vector3.up * jumpPower, ForceMode.Impulse);
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public void Combo() {
+        // 攻撃時に呼ばれる　コンボ中に設定
+        isComboChain = true;
+
+        // コンボのカウントを加算
+        comboCount++;
+
+        // タイマーをリセット
+        comboLimitTimer = 0;
+
+        // コンボ数表示を生成
+        uiManager.CreateComboDetail(comboCount);
+
+        Debug.Log("コンボ中 : " + comboCount + " Hit!");
+    }
+
+    /// <summary>
+    /// コンボの持続時間を計測
+    /// </summary>
+    private void UpdateComboLimitTime() {
+        
+        // コンボ中でなければタイマーは計測しない
+        if (!isComboChain) {
+            return;
+        }
+
+        // タイマー計測
+        comboLimitTimer += Time.deltaTime;
+
+        // タイマーの計測値がコンボ持続時間の規定値を超えたら
+        if (comboLimitTimer >= comboLimit) {
+            // コンボ終了
+            isComboChain = false;
+
+            // 設定を初期化
+            comboLimitTimer = 0;
+            comboCount = 0;            
+
+            Debug.Log("コンボ終了");
+        }
     }
 }

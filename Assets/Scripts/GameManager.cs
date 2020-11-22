@@ -7,7 +7,7 @@ public class GameManager : MonoBehaviour
     public StageList stageList;    // スクリプタブル・オブジェクトを登録
 
     public int areaIndex;          // 現在のエリア数。敵をすべて倒すとカウントアップ
-    public int currentStageNo;     // 現在のステージ数。ボスを倒してクリアすると増える。GameDataに管理させる
+    //public int currentStageNo;     // 現在のステージ数。ボスを倒してクリアすると増える。GameDataに管理させる
 
     public PlayerController playerController;
 
@@ -43,49 +43,32 @@ public class GameManager : MonoBehaviour
     public GameState gameState = GameState.Wait;
 
 
+    //* Rayによる移動制限判定用  *//
+
+    public GameObject limitObjPrefab;      // 移動制限用オブジェクト
+
+    public GameObject rayObj;              // BoxCast用のRayを発射するオブジェクト
+
+    float scale;                           // BoxCastの判定に使うコライダーのサイズ設定用
+
+    bool isHit;                            // Rayの判定結果の戻り値代入用
+
+    RaycastHit hit;                        // BoxCastのoutキーワードへの取得値代入用
+
+    List<GameObject> limitObjList = new List<GameObject>();   // 移動制限用オブジェクトを代入するリスト
+
+
     // 未
     public bool isDebugAreaMoving;
 
     public AreaCameraManager areaCameraManager;
 
 
-    // Rayによる移動制限判定用
-
-    public GameObject limiterObjPrefab;    // 移動制限用オブジェクト
-
-    public GameObject rayObj;              // Rayを発射するオブジェクト
-
-    bool isHit;                            // Rayの判定結果
-
-    // BoxcastでRayを飛ばす
-    RaycastHit hit;                        // BoxCastの戻り値代入用
-
-    List<GameObject> limitObjList = new List<GameObject>();
-
-
-    void Start()
-    {
-        // 現在のステージ番号を取得
-        if (GameData.instance != null) {
-            currentStageNo = GameData.instance.currentStageNo;
-        } else {
-            currentStageNo = 0;  // 初期化
-        }
-
+    void Start() {
+        // ステージの番号を取得してステージの準備を行う
         InitStage();
 
-        SetUpNextArea();
-    }
-
-    /// <summary>
-    /// エリアの番号を切り替える
-    /// </summary>
-    /// <param name="amountNo"></param>
-    public void OnClickChangeAreaNo(int amountNo) {
-        // エリアの番号をセット
-        areaIndex += amountNo;
-
-        // エリア番号からエリアの情報を取得
+        // エリア番号からエリアの情報を取得してエリアの準備を行う
         SetUpNextArea();
     }
 
@@ -97,19 +80,20 @@ public class GameManager : MonoBehaviour
         gameState = GameState.Wait;
         Debug.Log(gameState);
 
+        //areaIndex = 0;
+
         // TODO GameDataからステージ番号をセット
         //currentStageNo = 0;
-        
+
 
         // ステージ番号から、どのステージかを検索してStageDataを取得
-        currentStageData = stageList.stageDatas.Find(x => x.stageNo == currentStageNo);
+        currentStageData = stageList.stageDatas.Find(x => x.stageNo == GameData.instance.currentStageNo);
 
         //foreach (StageList.StageData stageData in stageList.stageDatas) {
-        //    if (stage.stageNo == currentStageNo) {
+        //    if (stage.stageNo == GameData.instance.currentStageNo) {
         //        currentStageData = stageData;
         //    }
         //}
-
 
         // エリアの番号をセット
         areaIndex = 0;
@@ -120,12 +104,10 @@ public class GameManager : MonoBehaviour
     /// GizmosでRayの結果を表示するコールバック。この中でGizmosの処理を記述しないとエラーになる
     /// </summary>
     private void OnDrawGizmos() {
-        // 判定に使うサイズ
-        float scale = limiterObjPrefab.transform.localScale.x * 0.5f;
-
+        // Rayがヒットしなかった場合
         if (!isHit) {
             Gizmos.DrawRay(rayObj.transform.position, -transform.up * 100);
-        } else {
+        } else {　　//　Rayがヒットした場合
             Gizmos.DrawRay(rayObj.transform.position, -transform.up * hit.distance);
             Gizmos.DrawWireCube(rayObj.transform.position - transform.up * hit.distance, Vector3.one * scale * 2);
         }
@@ -135,9 +117,9 @@ public class GameManager : MonoBehaviour
     /// 移動制限範囲用のオブジェクトの生成
     /// </summary>
     private void CreateLimitObjs() {
-
-        // TODO BoxCastの判定に使うコライダーのサイズ(別の部分に移動して1回だけ処理したい)
-        float scale = limiterObjPrefab.transform.localScale.x * 0.5f;
+        // BoxCastの判定に使うコライダーのサイズを移動制限用のゲームオブジェクトを元に設定
+        // ここでは判定を行うサイズの半分の大きさにする(直径でBoxCastを発射するため)
+        scale = limitObjPrefab.transform.localScale.x * 0.5f;
 
         // 生成個数の指定
         int range = (int)(forwordLimitPos - backLimitPos) / 2;
@@ -150,32 +132,32 @@ public class GameManager : MonoBehaviour
             // Rayの発射位置を設定
             rayObj.transform.position = new Vector3(leftLimitPos, rayObj.transform.position.y, backLimitPos + i * 2.5f);
 
-            // Rayを発射。Rayの接触したコライダーを持つゲームオブジェクトのレイヤーを判定(第2引数には半径を指定)
+            // Rayを発射。Rayの接触したコライダーを持つゲームオブジェクトとの接触を判定
             isHit = Physics.BoxCast(rayObj.transform.position, Vector3.one * scale, -transform.up, out hit);
 
             Debug.Log(isHit);
             Debug.Log(hit.collider.gameObject.layer);
 
-            // ObstacleLayerではなかったら
+            // Rayが接触したコライダーのゲームオブジェクトのLayeyが Obstacle というLayerではなかったら
             if (hit.collider.gameObject.layer != LayerMask.NameToLayer("Obstacle")) {
                 // 移動制限用のオブジェクトを生成してリストへ追加
-                limitObjList.Add(Instantiate(limiterObjPrefab, new Vector3(leftLimitPos, 8.0f, backLimitPos + i * 2.5f), limiterObjPrefab.transform.rotation));
+                limitObjList.Add(Instantiate(limitObjPrefab, new Vector3(leftLimitPos, 8.0f, backLimitPos + i * 2.5f), limitObjPrefab.transform.rotation));
             }
 
             // 右側
             // Rayの発射位置を設定
             rayObj.transform.position = new Vector3(rightLimitPos, rayObj.transform.position.y, backLimitPos + i * 2.5f);
 
-            // Rayを発射。Rayの接触したコライダーを持つゲームオブジェクトのレイヤーを判定(第2引数には半径を指定)
+            // Rayを発射。Rayの接触したコライダーを持つゲームオブジェクトとの接触を判定
             isHit = Physics.BoxCast(rayObj.transform.position, Vector3.one * scale, -transform.up, out hit);
 
             Debug.Log(isHit);
             Debug.Log(hit.collider.gameObject.layer);
 
-            // ObstacleLayerではなかったら
+            // Rayが接触したコライダーのゲームオブジェクトのLayeyが Obstacle というLayerではなかったら
             if (hit.collider.gameObject.layer != LayerMask.NameToLayer("Obstacle")) {
                 // 移動制限用のオブジェクトを生成してリストへ追加
-                limitObjList.Add(Instantiate(limiterObjPrefab, new Vector3(rightLimitPos, 8.0f, backLimitPos + i * 2.5f), limiterObjPrefab.transform.rotation));
+                limitObjList.Add(Instantiate(limitObjPrefab, new Vector3(rightLimitPos, 8.0f, backLimitPos + i * 2.5f), limitObjPrefab.transform.rotation));
             }
         }
     }
@@ -191,7 +173,7 @@ public class GameManager : MonoBehaviour
     }
 
     /// <summary>
-    /// エリア番号からエリアの情報を取得
+    /// エリア番号からエリアの情報を取得してエリアの準備を行う
     /// </summary>
     private void SetUpNextArea() {
         // カメラの優先順位　切り替え
@@ -259,7 +241,7 @@ public class GameManager : MonoBehaviour
                 // ステージをクリアしたか確認
                 if (CheckStageClear() == true) {  // true かどうか判定
                     // クリアしていれば、次のステージをスタート
-                    NextStage();
+                    StartCoroutine(NextStage());
                 } else {
                     // クリアしていなければ、次のエリアをスタート                 
                     SetUpNextArea();
@@ -267,13 +249,20 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        // エリアごとの敵の生成数と現在の生成数を比べて、すべて生成済の場合には処理をしない
-        if (generateCount >= currentStageData.areaDatas[areaIndex].appearNum.Length) {
+        // 用意してあるエリアの数を超えたら処理しない
+        if (areaIndex >= currentStageData.areaDatas.Count) {
             return;
         }
 
+        // エリアごとの敵の生成数と現在の生成数を比べて、すべて生成済の場合には処理をしない
+        if (generateCount >= currentStageData.areaDatas[areaIndex].appearNum.Length) { 
+            return;
+        }
+
+        // 敵の生成まで時間をカウントアップ
         generateTimer += Time.deltaTime;
 
+        // 生成までの時間が待機時間を超えたら
         if (generateTimer >= appearTime) {
             generateTimer = 0;
 
@@ -357,8 +346,10 @@ public class GameManager : MonoBehaviour
 
         // エリアの番号がステージの最後のエリアの番号かどうか確認する
         if (areaIndex >= currentStageData.areaDatas.Count) {
+            Debug.Log("ステージ　クリア");
             return true;
         }
+        Debug.Log("ステージ　未クリア。次のエリアへ");
         return false;
     }
 
@@ -367,15 +358,15 @@ public class GameManager : MonoBehaviour
     /// </summary>
     private IEnumerator NextStage() {
         // ステージ番号を次に送る
-        currentStageNo++;
+        GameData.instance.currentStageNo++;
 
         // すべてのステージをクリアしたか確認する
-        if (currentStageNo >= stageList.stageDatas.Count) {
+        if (GameData.instance.currentStageNo >= stageList.stageDatas.Count) {
             // ゲームクリア
             Debug.Log("ゲームクリア");
         } else {
             // すべてのステージをクリアしていなければ
-            Debug.Log("次のステージへ");
+            Debug.Log("次のステージへ");        
 
             // TODO ステージクリアの演出
             yield return StartCoroutine(SceneStory());
@@ -388,9 +379,30 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// イベント用ストーリーを進める、あるいはイベント用のシーンへ遷移する
+    /// </summary>
+    /// <returns></returns>
     private IEnumerator SceneStory() {
-        // TODO ストーリー展開
+        // TODO このシーン内でストーリー展開
+
+        // TODO あるいはイベント用のシーンへ遷移する
 
         yield return null;
+    }
+
+
+    // 未
+
+    /// <summary>
+    /// エリアの番号を切り替える(Debug用)
+    /// </summary>
+    /// <param name="amountNo"></param>
+    public void OnClickChangeAreaNo(int amountNo) {
+        // エリアの番号をセット
+        areaIndex += amountNo;
+
+        // エリア番号からエリアの情報を取得してエリアの準備を行う
+        SetUpNextArea();
     }
 }

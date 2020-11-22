@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 2086257237609090570}
   - component: {fileID: -6949508517712011582}
   m_Layer: 0
-  m_Name: Limiter
+  m_Name: LimitObj
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
