@@ -31,3 +31,9 @@ MonoBehaviour:
     jumpPower: 2
     attackPower: 5
     charaType: 3
+  - no: 3
+    hp: 50
+    moveSpeed: 3
+    jumpPower: 5
+    attackPower: 30
+    charaType: 5
