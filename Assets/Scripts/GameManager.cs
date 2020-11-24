@@ -58,6 +58,11 @@ public class GameManager : MonoBehaviour
     List<GameObject> limitObjList = new List<GameObject>();   // 移動制限用オブジェクトを代入するリスト
 
 
+    [SerializeField]
+    private PlayerController playerPrefab;
+
+    public UIManager uiManager;
+
     // 未
     public bool isDebugAreaMoving;
 
@@ -67,6 +72,8 @@ public class GameManager : MonoBehaviour
     void Start() {
         // ステージの番号を取得してステージの準備を行う
         InitStage();
+
+        CreatePlayer();
 
         // エリア番号からエリアの情報を取得してエリアの準備を行う
         SetUpNextArea();
@@ -98,6 +105,12 @@ public class GameManager : MonoBehaviour
         // エリアの番号をセット
         areaIndex = 0;
 
+    }
+
+    private void CreatePlayer() {
+        playerController = Instantiate(playerPrefab);
+        playerController.InitPlayer(this, GameData.instance.currentCharaNo);
+        //cameraFollow.Setup_Camera(playerController.gameObject);
     }
 
     /// <summary>
