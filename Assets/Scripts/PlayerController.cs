@@ -6,7 +6,7 @@ public class PlayerController : MonoBehaviour
 {
     [Header("移動速度")]
     public float moveSpeed;
-    [Header("回転速度")]
+    [Header("回転速度"), HideInInspector]
     public float rotateSpeed;
 
     [Header("ジャンプ力")]
@@ -15,6 +15,8 @@ public class PlayerController : MonoBehaviour
     public LayerMask groundLayer;
 
     public int attackPower;
+
+    [HideInInspector]
     public float bulletSpeed;
 
     //public MoveLimit moveLimit;
@@ -30,7 +32,7 @@ public class PlayerController : MonoBehaviour
     public int maxHp;
     public int hp;
 
-
+    [HideInInspector]
     public bool isGround;
 
     private const string HORIZONTAL = "Horizontal";
@@ -49,27 +51,43 @@ public class PlayerController : MonoBehaviour
 
     public GameManager gameManager;
 
-    public int comboCount;
+
+    [Header("コンボの受付時間")]
     public int comboLimit;
 
-    private float comboLimitTimer;
-    private bool isComboChain;
+    private int comboCount;            // 現在のコンボ数
+    private float comboLimitTimer;     // コンボの受付時間用のタイマー
+    private bool isComboChain;         // コンボ中かどうかの判定用。true はコンボ中。false は非コンボ中
 
     [SerializeField]
-    private UIManager uiManager;
+    private UIManager uiManager;       // UIManager クラス代入用。ヒエラルキーにある UIManager ゲームオブジェクトをアサインして UIManager クラスを取得
 
+    public CharaType charaType; 
 
     void Start()
     {
-        InitPlayer();
+        //InitPlayer();
     }
 
     /// <summary>
 	/// Player情報の初期設定
 	/// </summary>
-	private void InitPlayer() {
+	public void InitPlayer(GameManager gameManager) {
         rb = GetComponent<Rigidbody>();
         anim = GetComponent<Animator>();
+
+        // プレファブにした際に切れてしまっているアサイン情報を代入
+        this.gameManager = gameManager;
+        uiManager = gameManager.uiManager;
+
+        // キャラデータを元に各値をセット
+        maxHp = GameData.instance.playableCharaData.hp;
+        moveSpeed = GameData.instance.playableCharaData.moveSpeed;
+        jumpPower = GameData.instance.playableCharaData.jumpPower;
+        attackPower = GameData.instance.playableCharaData.attackPower;
+        charaType = GameData.instance.playableCharaData.charaType;
+
+        // TODO 他にも取得する情報がある場合にはここで設定する
 
         hp = maxHp;
     }
@@ -80,19 +98,17 @@ public class PlayerController : MonoBehaviour
         // 地面の判定
         CheckGround();
 
-
         // ジャンプの判定
         JudgeJump();
 
         // TODO 攻撃
-
 
         // コンボの時間判定
         UpdateComboLimitTime();
 
         // デバッグ用
         if (Input.GetKeyDown(KeyCode.Z)) {
-            Combo();
+            TriggerComboCount();
         }
     }
 
@@ -249,9 +265,9 @@ public class PlayerController : MonoBehaviour
     }
 
     /// <summary>
-    /// 
+    /// コンボ処理の際に呼ばれる
     /// </summary>
-    public void Combo() {
+    public void TriggerComboCount() {
         // 攻撃時に呼ばれる　コンボ中に設定
         isComboChain = true;
 

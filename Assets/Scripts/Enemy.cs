@@ -8,12 +8,17 @@ public class Enemy : MonoBehaviour
 
     private GameManager gameManager;
 
+    [SerializeField]
+    CharaDataList.CharaData enemyData;
+
     /// <summary>
     /// Enemyクラスの初期設定
     /// </summary>
     /// <param name="gameManager"></param>
-    public void SetUpEnemy(GameManager gameManager) {
+    public void SetUpEnemy(GameManager gameManager, int enemyNo) {
         this.gameManager = gameManager;
+
+        enemyData = GameData.instance.GetCharaData(enemyNo);
     }
 
     void Start()

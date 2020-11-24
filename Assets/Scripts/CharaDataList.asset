@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74d4db699ccd3a540af2de3d7d2deb7f, type: 3}
+  m_Name: CharaDataList
+  m_EditorClassIdentifier: 
+  charaDatas:
+  - no: 0
+    hp: 30
+    moveSpeed: 3
+    jumpPower: 3
+    attackPower: 10
+    charaType: 0
+  - no: 1
+    hp: 50
+    moveSpeed: 2
+    jumpPower: 2
+    attackPower: 15
+    charaType: 1
+  - no: 2
+    hp: 20
+    moveSpeed: 2
+    jumpPower: 2
+    attackPower: 5
+    charaType: 3
+  - no: 3
+    hp: 50
+    moveSpeed: 3
+    jumpPower: 5
+    attackPower: 30
+    charaType: 5

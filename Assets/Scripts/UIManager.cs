@@ -10,8 +10,6 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     private ComboDetail comboDetailPrefab;
 
-    List<ComboDetail> comboDetailList = new List<ComboDetail>();
-
     /// <summary>
     /// コンボ数表示を生成
     /// </summary>
