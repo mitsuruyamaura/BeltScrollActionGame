@@ -14,20 +14,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   charaDatas:
   - no: 0
-    hp: 0
-    moveSpeed: 0
-    jumpPower: 0
-    attackPower: 0
+    hp: 30
+    moveSpeed: 3
+    jumpPower: 3
+    attackPower: 10
     charaType: 0
-  - no: 0
-    hp: 0
-    moveSpeed: 0
-    jumpPower: 0
-    attackPower: 0
-    charaType: 0
-  - no: 0
-    hp: 0
-    moveSpeed: 0
-    jumpPower: 0
-    attackPower: 0
-    charaType: 0
+  - no: 1
+    hp: 50
+    moveSpeed: 2
+    jumpPower: 2
+    attackPower: 15
+    charaType: 1
+  - no: 2
+    hp: 20
+    moveSpeed: 2
+    jumpPower: 2
+    attackPower: 5
+    charaType: 3

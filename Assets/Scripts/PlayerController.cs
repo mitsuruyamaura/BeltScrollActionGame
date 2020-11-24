@@ -72,7 +72,7 @@ public class PlayerController : MonoBehaviour
     /// <summary>
 	/// Player情報の初期設定
 	/// </summary>
-	public void InitPlayer(GameManager gameManager, int charaNo) {
+	public void InitPlayer(GameManager gameManager) {
         rb = GetComponent<Rigidbody>();
         anim = GetComponent<Animator>();
 
@@ -80,15 +80,12 @@ public class PlayerController : MonoBehaviour
         this.gameManager = gameManager;
         uiManager = gameManager.uiManager;
 
-        // キャラの番号からキャラデータを取得
-        CharaDataList.CharaData charaData = GameData.instance.GetCharaData(charaNo);
-
         // キャラデータを元に各値をセット
-        maxHp = charaData.hp;
-        moveSpeed = charaData.moveSpeed;
-        jumpPower = charaData.jumpPower;
-        attackPower = charaData.attackPower;
-        charaType = charaData.charaType;
+        maxHp = GameData.instance.playableCharaData.hp;
+        moveSpeed = GameData.instance.playableCharaData.moveSpeed;
+        jumpPower = GameData.instance.playableCharaData.jumpPower;
+        attackPower = GameData.instance.playableCharaData.attackPower;
+        charaType = GameData.instance.playableCharaData.charaType;
 
         // TODO 他にも取得する情報がある場合にはここで設定する
 

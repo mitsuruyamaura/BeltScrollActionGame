@@ -24,6 +24,7 @@ public class GameData : MonoBehaviour
 
     //public List<CharaData> charaDataList = new List<CharaData>();
 
+    [Header("使用するキャラの番号")]
     public int currentCharaNo;
 
     [Header("キャラデータのデータベース")]
@@ -31,6 +32,9 @@ public class GameData : MonoBehaviour
 
     [Header("現在使用中のキャラのキャラデータ")]
     public CharaDataList.CharaData playableCharaData;
+
+    [Header("使用可能なキャラ数")]
+    public int usePlayableCharaCount;
 
 
     void Awake() {

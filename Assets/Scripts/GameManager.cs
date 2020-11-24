@@ -73,6 +73,10 @@ public class GameManager : MonoBehaviour
         // ステージの番号を取得してステージの準備を行う
         InitStage();
 
+        // 使用するキャラデータをキャラの番号より取得してGameDataに保持
+        GameData.instance.SetUpPlayableCharaData(GameData.instance.currentCharaNo);
+
+        // キャラ生成
         CreatePlayer();
 
         // エリア番号からエリアの情報を取得してエリアの準備を行う
@@ -107,9 +111,12 @@ public class GameManager : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// Player用のキャラ生成
+    /// </summary>
     private void CreatePlayer() {
         playerController = Instantiate(playerPrefab);
-        playerController.InitPlayer(this, GameData.instance.currentCharaNo);
+        playerController.InitPlayer(this);
         //cameraFollow.Setup_Camera(playerController.gameObject);
     }
 
@@ -304,7 +311,7 @@ public class GameManager : MonoBehaviour
 
         Enemy enemy = Instantiate(enemyPrefabs[currentStageData.areaDatas[areaIndex].appearNum[enemyIndex]], generatePos, Quaternion.identity);
         
-        enemy.SetUpEnemy(this);
+        enemy.SetUpEnemy(this, enemyIndex + GameData.instance.usePlayableCharaCount);
 
         // 生成された敵の情報を Enemy クラス単位でListに追加する
         enemyList.Add(enemy);
