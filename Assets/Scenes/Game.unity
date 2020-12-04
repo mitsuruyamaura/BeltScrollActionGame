@@ -2094,6 +2094,7 @@ MonoBehaviour:
   isCompleteGenerate: 0
   enemyPrefabs:
   - {fileID: 4874283829778288788, guid: 61debf180f2df274791fe0c9c775039d, type: 3}
+  - {fileID: 4874283829778288788, guid: 61debf180f2df274791fe0c9c775039d, type: 3}
   gameState: 0
   limitObjPrefab: {fileID: 5286901207067844414, guid: 11f46b14b694c78488e0434adb5e3062, type: 3}
   rayObj: {fileID: 1156723105}

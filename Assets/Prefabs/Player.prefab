@@ -1791,9 +1791,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 577e8662503dd0c4abc150bf296deabc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 3.5
+  moveSpeed: 0
   rotateSpeed: 3.5
-  jumpPower: 3.5
+  jumpPower: 0
   groundLayer:
     serializedVersion: 2
     m_Bits: 256
@@ -1805,6 +1805,7 @@ MonoBehaviour:
   gameManager: {fileID: 0}
   comboLimit: 2
   uiManager: {fileID: 0}
+  charaType: 0
 --- !u!1 &1167737642287255511
 GameObject:
   m_ObjectHideFlags: 0

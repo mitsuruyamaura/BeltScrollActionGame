@@ -310,8 +310,8 @@ public class GameManager : MonoBehaviour
         Vector3 generatePos = new Vector3(posX + Random.Range(-0.5f, 0.5f), charaPos.y, posZ + Random.Range(-0.5f, 0.5f));
 
         Enemy enemy = Instantiate(enemyPrefabs[currentStageData.areaDatas[areaIndex].appearNum[enemyIndex]], generatePos, Quaternion.identity);
-        
-        enemy.SetUpEnemy(this, enemyIndex + GameData.instance.usePlayableCharaCount);
+
+        enemy.SetUpEnemy(this, currentStageData.areaDatas[areaIndex].appearNum[enemyIndex] + GameData.instance.usePlayableCharaCount);
 
         // 生成された敵の情報を Enemy クラス単位でListに追加する
         enemyList.Add(enemy);

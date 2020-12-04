@@ -62,4 +62,12 @@ public class GameData : MonoBehaviour
     public CharaDataList.CharaData GetCharaData(int charaNo) {
         return charaDataList.charaDatas.Find(x => x.no == charaNo);
     }
+
+    /// <summary>
+    /// 使用するキャラの番号を設定(未使用)
+    /// </summary>
+    /// <param name="charaNo"></param>
+    public void SetUpCurrentCharaNo(int charaNo) {
+        currentCharaNo = charaNo;
+    }
 }

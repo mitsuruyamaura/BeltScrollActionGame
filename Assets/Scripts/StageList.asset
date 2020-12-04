@@ -23,7 +23,7 @@ MonoBehaviour:
         depthLimit:
           forword: 30
           back: 20
-      appearNum: 000000000000000000000000
+      appearNum: 010000000000000001000000
     - areaNo: 1
       areaMoveLimit:
         horizontalLimit:
@@ -52,4 +52,4 @@ MonoBehaviour:
         depthLimit:
           forword: 200
           back: -200
-      appearNum: 000000000000000000000000
+      appearNum: 000000000100000000000000
